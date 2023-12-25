@@ -1,0 +1,78 @@
+CREATE DATABASE EMPLOYEE;
+USE EMPLOYEE;
+CREATE TABLE EMPLOYEE_TABLE(
+EMPLOYE_ID INT PRIMARY KEY,
+NAME VARCHAR(50),
+DEPARTMENT VARCHAR(50),
+HIRE_DATE INT NOT NULL);
+
+CREATE TABLE SALARY_TABLE(
+EMPLOYE_ID INT PRIMARY KEY,
+SALARY INT,
+EFFECTIVE_DATE INT NOT NULL);
+
+
+SELECT
+    e.NAME AS employee_name,
+    COALESCE(e.DEPARTMENT, 'Unassigned') AS department_name
+FROM
+    EMPLOYEE_TABLE e;
+
+
+
+SELECT
+    DEPARTMENT,
+    COUNT(*) AS total_employees
+FROM
+    EMPLOYEE_TABLE
+GROUP BY
+    DEPARTMENT;
+
+
+
+SELECT
+    e.DEPARTMENT,
+    AVG(s.SALARY) AS average_salary
+FROM
+    EMPLOYEE_TABLE e
+JOIN
+    SALARY_TABLE s ON e.EMPLOYE_ID = s.EMPLOYE_ID
+GROUP BY
+    e.DEPARTMENT
+HAVING
+    AVG(s.SALARY) > 5500.00;
+    
+    
+    
+    SELECT
+    NAME AS employee_name,
+    HIRE_DATE
+FROM
+    EMPLOYEE_TABLE
+WHERE
+    HIRE_DATE > '2022-03-01';
+    
+    
+    
+    SELECT
+    s.EMPLOYE_ID,
+    e.NAME AS employee_name,
+    s.SALARY,
+    s.EFFECTIVE_DATE,
+    s.SALARY - avg_salary.average_salary AS salary_difference
+FROM
+    SALARY_TABLE s
+JOIN
+    EMPLOYEE_TABLE e ON s.EMPLOYE_ID = e.EMPLOYE_ID
+JOIN
+    (
+        SELECT
+            EMPLOYE_ID,
+            AVG(SALARY) AS average_salary
+        FROM
+            SALARY_TABLE
+        GROUP BY
+            EMPLOYE_ID
+    ) avg_salary ON s.EMPLOYE_ID = avg_salary.EMPLOYE_ID;
+
+
